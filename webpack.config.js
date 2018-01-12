@@ -1,17 +1,20 @@
 const webpack = require('webpack');
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = env => {
   const config = {
     entry: './src/index.js',
     output: {
-      path: path.resolve(__dirname, 'public'),
+      path: path.resolve(__dirname, 'dist'),
       filename: 'bundle.js'
     },
     devServer: {
+      contentBase: path.join(__dirname, 'public'),
+      compress: true,
+      historyApiFallback: true,
       inline: true,
-      port: 4000,
-      contentBase: __dirname + '/public/'
+      port: 4000
     },
     module: {
       loaders: [
@@ -26,7 +29,12 @@ module.exports = env => {
         }
       ]
     },
-    plugins: []
+    plugins: [
+      new HtmlWebpackPlugin({
+        inject: true,
+        template: 'public/index.html'
+      })
+    ]
   };
   if (process.env.NODE_ENV === 'production') {
     config.plugins.push(new webpack.optimize.UglifyJsPlugin());
